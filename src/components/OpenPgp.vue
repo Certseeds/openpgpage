@@ -29,9 +29,9 @@ export default{
     }
   }
 }
-const ownKey = await fetch('https://raw.githubusercontent.com/Certseeds/Certseeds/master/public.key', {
+const ownKey = await fetch('https://certseeds.github.io/Certseeds/public.key', {
       method: 'get'
-    }).then(body => body.text());
+}).then(body => body.text());
 const publicKey = await openpgp.readKey({ armoredKey: ownKey });
 const encry = async (input: string) => {
     const encrypted = await openpgp.encrypt({
