@@ -50,7 +50,7 @@ const encry = async (input: string) => {
         <textarea v-model="text" placeholder="put your text here"  @input="clear()" @change="clear()"></textarea>
         <div class="inner-div"></div>
     </div>
-    <button @click="publishedBooksMessage();times++"> click </button>
+    <button @click="publishedBooksMessage();times++"> click To Encrypt Word In TextArea</button>
     <p>copy encrypted text to post it in
         <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
             github discussion in new page
