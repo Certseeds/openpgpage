@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import OpenPgp from './components/OpenPgp.vue';
 </script>
 
 <template>
   <main>
-    <OpenPgp msg="hello"></OpenPgp>
   </main>
+  <router-view></router-view>
 </template>
 
 <style scoped>

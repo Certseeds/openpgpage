@@ -13,6 +13,8 @@ trim_trailing_whitespace = true
 
 
 # Matches the exact files either package.json or .travis.yml
-[*.json]
-indent_style = space
+[*.{ts,json}]
+indent_size = 2
+
+[*.vue]
 indent_size = 2

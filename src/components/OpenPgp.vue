@@ -1,86 +1,88 @@
 <script setup lang="ts">
 import * as openpgp from 'openpgp/lightweight';
-defineProps<{
-  msg: string
+
+import { ref, onMounted, toRefs } from 'vue'
+const props = defineProps<{
+  username: string
 }>()
-</script>
-<script lang="ts">
-export default{
-  data() {
-    return {
-        text: '',
-        times: 0
-    }
-  },
-  methods: {
-    // 一个计算属性的 getter
-      publishedBooksMessage () {
-        encry(this.text)
-        .then(encrypted => {
-            this.text = encrypted as string;
-            return;
-        })
-      // `this` 指向当前组件实例
-    },
-    clear() {
-        if(this.text.length === 0){
-            this.times = 0;
-        }
-    }
-  }
-}
-const ownKey = await fetch('https://certseeds.github.io/Certseeds/public.key', {
-      method: 'get'
-}).then(body => body.text());
-const publicKey = await openpgp.readKey({ armoredKey: ownKey });
-const encry = async (input: string) => {
+
+const { username } = toRefs(props);
+const encryptFunction: any = ref(null);
+const text = ref('');
+const times = ref(0);
+onMounted(async () => {
+  const ownKey = await fetch('https://certseeds.github.io/Certseeds/public.key', {
+    method: 'get',
+  }).then(body => body.text());
+  const publicKey = await openpgp.readKey({ armoredKey: ownKey });
+  const encry = async (input: string) => {
     const encrypted = await openpgp.encrypt({
-        message: await openpgp.createMessage({ text: input }), // input as Message object
-        encryptionKeys: publicKey,
+      message: await openpgp.createMessage({ text: input }), // input as Message object
+      encryptionKeys: publicKey,
     });
     console.log(encrypted);
     return encrypted;
+  }
+  encryptFunction.value = encry;
+})
+
+const publishedBooksMessage2 = () => {
+  const encry = encryptFunction.value as (input: string) => Promise<openpgp.WebStream<string>>;
+  encry(text.value)
+    .then(encrypted => {
+      text.value = encrypted as string;
+      return;
+    })
+  // `this` 指向当前组件实例
+}
+const clear = () => {
+  if (text.value.length === 0) {
+    times.value = 0;
+  }
 }
 </script>
 
 <template>
   <div class="greetings">
-    <p >Encrypt Times {{ times }} </p>
-    <div class="outter-div column1">    
-        <textarea v-model="text" placeholder="put your text here"  @input="clear()" @change="clear()"></textarea>
-        <div class="inner-div"></div>
+    <p>Encrypt Times {{ times }} </p>
+    <div class="outter-div column1">
+      <textarea v-model="text" placeholder="put your text here" @input="clear()" @change="clear()"></textarea>
+      <div class="inner-div"></div>
     </div>
-    <button @click="publishedBooksMessage();times++"> click To Encrypt Word In TextArea</button>
+    <button @click="publishedBooksMessage2(); times++"> click To Encrypt Word In TextArea</button>
     <p>copy encrypted text to post it in
-        <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
-            github discussion in new page
-        </a>
+      <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
+        github discussion in new page
+      </a>
     </p>
+    <p>hello {{ username }}</p>
   </div>
 </template>
 
 <style scoped>
+.outter-div {
+  border: 0px;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  text-align: justify;
+}
 
-.outter-div{
-    border: 0px;
-    position: relative;
-    height: 100%;
-    width: 100%;
-    text-align: justify;
+.outter-div textarea {
+  border: 1px solid;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  line-height: 16px;
 }
-.outter-div textarea{
-    border: 1px solid;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    line-height: 16px;
+
+.inner-div {
+  position: relative;
+  height: calc(40vh);
+  width: calc(40vw);
+  visibility: hidden;
 }
-.inner-div{
-    position: relative;
-    height: calc(40vh);
-    width: calc(40vw);
-    visibility: hidden;
-}
+
 h1 {
   font-weight: 500;
   font-size: 2.6rem;
@@ -97,6 +99,7 @@ h3 {
 }
 
 @media (min-width: 1024px) {
+
   .greetings h1,
   .greetings h3 {
     text-align: left;
