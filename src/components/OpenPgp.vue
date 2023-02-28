@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import * as openpgp from 'openpgp/lightweight';
+import { ref, onMounted, toRefs } from 'vue';
 
-import { ref, onMounted, toRefs } from 'vue'
 const props = defineProps<{
   username: string
 }>()
 
 const { username } = toRefs(props);
-const encryptFunction: any = ref(null);
+const encryptFunction: { value: (input: string) => Promise<openpgp.WebStream<string>> } = ref(() => { return Promise.resolve('') });
 const text = ref('');
 const times = ref(0);
 onMounted(async () => {
@@ -26,14 +26,13 @@ onMounted(async () => {
   encryptFunction.value = encry;
 })
 
-const publishedBooksMessage2 = () => {
-  const encry = encryptFunction.value as (input: string) => Promise<openpgp.WebStream<string>>;
+const publishedBooksMessage = () => {
+  const encry = encryptFunction.value;
   encry(text.value)
     .then(encrypted => {
       text.value = encrypted as string;
       return;
     })
-  // `this` 指向当前组件实例
 }
 const clear = () => {
   if (text.value.length === 0) {
@@ -49,7 +48,7 @@ const clear = () => {
       <textarea v-model="text" placeholder="put your text here" @input="clear()" @change="clear()"></textarea>
       <div class="inner-div"></div>
     </div>
-    <button @click="publishedBooksMessage2(); times++"> click To Encrypt Word In TextArea</button>
+    <button @click="publishedBooksMessage(); times++"> click To Encrypt Word In TextArea</button>
     <p>copy encrypted text to post it in
       <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
         github discussion in new page
