@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as openpgp from 'openpgp/lightweight';
 import { ref, onMounted, toRefs } from 'vue';
-
+import { getKeyCanEncryptAndNotRevoked } from '@/components/openpgp';
 const props = defineProps<{
   username: string
 }>()
@@ -10,15 +10,35 @@ const { username } = toRefs(props);
 const encryptFunction: { value: (input: string) => Promise<openpgp.WebStream<string>> } = ref(() => { return Promise.resolve('') });
 const text = ref('');
 const times = ref(0);
-onMounted(async () => {
-  const ownKey = await fetch('https://certseeds.github.io/Certseeds/public.key', {
+
+const getFetchRawKey: (input: string) => Promise<string> = async (input: string) => {
+  console.log('--' + (input?.length ?? 0));
+  if ((input?.length ?? 0) > 0) {
+    const url = `https://api.github.com/users/${username.value}/gpg_keys`
+    const ownKey = await fetch(url, {
+      method: 'get',
+      headers: {
+        'Accept': '  application/vnd.github+json',
+      },
+    }).then(body => body.json())
+      .then(bodyJson => {
+        const value = getKeyCanEncryptAndNotRevoked(bodyJson);
+        console.log(value)
+        return value.raw_key
+      }) ?? '';
+    return ownKey;
+  }
+  return await fetch('https://certseeds.github.io/Certseeds/public.key', {
     method: 'get',
   }).then(body => body.text());
-  const publicKey = await openpgp.readKey({ armoredKey: ownKey });
+}
+onMounted(async () => {
+  // api.github.com/
+  const ownKey = await getFetchRawKey(username.value);
   const encry = async (input: string) => {
     const encrypted = await openpgp.encrypt({
       message: await openpgp.createMessage({ text: input }), // input as Message object
-      encryptionKeys: publicKey,
+      encryptionKeys: await openpgp.readKey({ armoredKey: ownKey })
     });
     console.log(encrypted);
     return encrypted;

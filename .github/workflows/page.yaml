@@ -27,13 +27,18 @@ jobs:
           key: ${{ runner.os }}-nodejs-${{ hashFiles('./package-lock.json', './package.json') }}
           restore-keys: |
             ${{ runner.os }}-nodejs-
+
       - name: download avatars
         run: curl -f "https://avatars.githubusercontent.com/u/51754303?s=40" -o ./public/favicon.ico
 
+      - name: node prepare
+        run: npm i npm-run-all
+
+      - name: node test
+        run: npm run test
+
       - name: node build
-        run: |
-          npm i npm-run-all
-          npm run build
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
