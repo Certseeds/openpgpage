@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as openpgp from 'openpgp/lightweight';
-import { ref, onMounted, toRefs } from 'vue';
+import { ref, toRefs, watchEffect } from 'vue';
 import { getKeyCanEncryptAndNotRevoked } from '@/components/openpgp';
 const props = defineProps<{
   username: string
@@ -10,16 +10,12 @@ const { username } = toRefs(props);
 const encryptFunction: { value: (input: string) => Promise<openpgp.WebStream<string>> } = ref(() => { return Promise.resolve('') });
 const text = ref('');
 const times = ref(0);
-
 const getFetchRawKey: (input: string) => Promise<string> = async (input: string) => {
-  console.log('--' + (input?.length ?? 0));
   if ((input?.length ?? 0) > 0) {
     const url = `https://api.github.com/users/${username.value}/gpg_keys`
     const ownKey = await fetch(url, {
       method: 'get',
-      headers: {
-        'Accept': '  application/vnd.github+json',
-      },
+      headers: { 'Accept': '  application/vnd.github+json', },
     }).then(body => body.json())
       .then(bodyJson => {
         const value = getKeyCanEncryptAndNotRevoked(bodyJson);
@@ -32,9 +28,11 @@ const getFetchRawKey: (input: string) => Promise<string> = async (input: string)
     method: 'get',
   }).then(body => body.text());
 }
-onMounted(async () => {
+
+watchEffect(async () => {
+  const username_value = username.value;
   // api.github.com/
-  const ownKey = await getFetchRawKey(username.value);
+  const ownKey = await getFetchRawKey(username_value);
   const encry = async (input: string) => {
     const encrypted = await openpgp.encrypt({
       message: await openpgp.createMessage({ text: input }), // input as Message object
@@ -44,7 +42,8 @@ onMounted(async () => {
     return encrypted;
   }
   encryptFunction.value = encry;
-})
+});
+
 
 const publishedBooksMessage = () => {
   const encry = encryptFunction.value;
@@ -59,6 +58,7 @@ const clear = () => {
     times.value = 0;
   }
 }
+
 </script>
 
 <template>
