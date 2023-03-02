@@ -7,12 +7,10 @@ permissions:
 on:
   pull_request:
     types: [opened, reopened,submitted, edited]
-    conditions:
-      contains:
-        ${{ github.repository }}
 
 jobs:
   test:
+    if: github.repository == 'Certseeds/openpgpage'
     runs-on: ubuntu-latest
     steps:
       - uses: anc95/ChatGPT-CodeReview@v1
