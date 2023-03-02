@@ -7,6 +7,9 @@ permissions:
 on:
   pull_request:
     types: [opened, reopened,submitted, edited]
+    conditions:
+      contains:
+        ${{ github.repository }}
 
 jobs:
   test:
