@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import * as openpgp from 'openpgp/lightweight';
-import { ref, toRefs, watchEffect } from 'vue';
+import { ref, reactive, toRefs, watchEffect } from 'vue';
 import { getKeyCanEncryptAndNotRevoked } from '@/components/openpgp';
 const props = defineProps<{
   username: string
 }>()
 
 const { username } = toRefs(props);
-const encryptFunction: { value: (input: string) => Promise<openpgp.WebStream<string>> } = ref(() => { return Promise.resolve('') });
+const encryptFunction = reactive({ func: (_str_: string) => { return Promise.resolve('' as openpgp.WebStream<string>) } });
 const text = ref('');
 const times = ref(0);
 const getFetchRawKey: (input: string) => Promise<string> = async (input: string) => {
@@ -41,12 +41,12 @@ watchEffect(async () => {
     console.log(encrypted);
     return encrypted;
   }
-  encryptFunction.value = encry;
+  encryptFunction.func = encry;
 });
 
 
 const publishedBooksMessage = () => {
-  const encry = encryptFunction.value;
+  const encry = encryptFunction.func;
   encry(text.value)
     .then(encrypted => {
       text.value = encrypted as string;
