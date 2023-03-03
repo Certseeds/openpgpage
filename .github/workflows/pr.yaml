@@ -13,7 +13,23 @@ jobs:
     if: github.repository == 'Certseeds/openpgpage'
     runs-on: ubuntu-latest
     steps:
+
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+          ref: ${{github.event.pull_request.head.ref}}
+          submodules: false
+
       - uses: anc95/ChatGPT-CodeReview@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.CHATGPT_SESSION_TOKEN }}
+
+      - uses: unsafecoerce/chatgpt-action@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHATGPT_ACCESS_TOKEN: ${{ secrets.CHATGPT_SESSION_TOKEN }}
+          OPENAI_API_KEY: ''
+        with:
+          debug: false
+          action: score
