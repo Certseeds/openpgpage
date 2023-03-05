@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest",
+    "preinstall": "npx only-allow pnpm -y"
   },
   "dependencies": {
     "vue": "^3.2.45",
