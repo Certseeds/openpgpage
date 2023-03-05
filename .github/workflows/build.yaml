@@ -1,0 +1,41 @@
+name: github pages
+
+on: ["push"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: false
+          fetch-depth: 1
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-nodejs-${{ hashFiles('./package-lock.json', './package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nodejs-
+
+      - name: download avatars
+        run: curl -f "https://avatars.githubusercontent.com/u/51754303?s=40" -o ./public/favicon.ico
+
+      - name: node prepare
+        run: npm i npm-run-all
+
+      - name: node test
+        run: npm run test
+
+      - name: node build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./dist
