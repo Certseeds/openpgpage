@@ -20,10 +20,14 @@ jobs:
           ref: ${{github.event.pull_request.head.ref}}
           submodules: false
 
-      - uses: anc95/ChatGPT-CodeReview@main
+      - uses: unsafecoerce/chatgpt-action@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.CHATGPT_SESSION_TOKEN }}
+          CHATGPT_ACCESS_TOKEN: ${{ secrets.CHATGPT_SESSION_TOKEN }}
+        with:
+          debug: false
+          action: review
+          review_comment_lgtm: true
 
       - uses: unsafecoerce/chatgpt-action@main
         env:
@@ -33,3 +37,12 @@ jobs:
         with:
           debug: false
           action: score
+
+      - uses: anc95/ChatGPT-CodeReview@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.CHATGPT_SESSION_TOKEN }}
+
+
+
+
