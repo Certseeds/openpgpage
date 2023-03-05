@@ -16,24 +16,38 @@ jobs:
         with:
           node-version: 18
 
-      - uses: actions/cache@v3
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
         with:
-          path: ./node_modules
-          key: ${{ runner.os }}-nodejs-${{ hashFiles('./package-lock.json', './package.json') }}
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-nodejs-
+            ${{ runner.os }}-pnpm-store-
 
       - name: download avatars
         run: curl -f "https://avatars.githubusercontent.com/u/51754303?s=40" -o ./public/favicon.ico
 
       - name: node prepare
-        run: npm i npm-run-all
+        run: pnpm i
 
       - name: node test
-        run: npm run test
+        run: pnpm run test
 
       - name: node build
-        run: npm run build
+        run: pnpm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
