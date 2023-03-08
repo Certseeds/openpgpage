@@ -1,5 +1,4 @@
 import { getKeyCanEncryptAndNotRevoked } from '@/components/openpgp';
-import * as openpgp from 'openpgp/lightweight'
 
 test('test empty array', () => {
   const emptyArrayFromString = JSON.parse('[]');

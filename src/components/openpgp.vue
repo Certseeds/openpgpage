@@ -1,38 +1,15 @@
 <script setup lang="ts">
 import * as openpgp from 'openpgp/lightweight';
-import { ref, reactive, toRefs, watchEffect } from 'vue';
-import { getKeyCanEncryptAndNotRevoked } from '@/components/openpgp';
+import { ref, reactive, watchEffect } from 'vue';
 const props = defineProps<{
-  username: string
+  publicKey: string
 }>()
-
-const { username } = toRefs(props);
 const encryptFunction = reactive({ func: (_str_: string) => { return Promise.resolve('' as openpgp.WebStream<string>) } });
 const text = ref('');
 const times = ref(0);
-const getFetchRawKey: (input: string) => Promise<string> = async (input: string) => {
-  if ((input?.length ?? 0) > 0) {
-    const url = `https://api.github.com/users/${username.value}/gpg_keys`
-    const ownKey = await fetch(url, {
-      method: 'get',
-      headers: { 'Accept': '  application/vnd.github+json', },
-    }).then(body => body.json())
-      .then(bodyJson => {
-        const value = getKeyCanEncryptAndNotRevoked(bodyJson);
-        console.log(value)
-        return value.raw_key
-      }) ?? '';
-    return ownKey;
-  }
-  return await fetch('https://certseeds.github.io/Certseeds/public.key', {
-    method: 'get',
-  }).then(body => body.text());
-}
 
 watchEffect(async () => {
-  const username_value = username.value;
-  // api.github.com/
-  const ownKey = await getFetchRawKey(username_value);
+  const ownKey = props.publicKey;
   const encry = async (input: string) => {
     const encrypted = await openpgp.encrypt({
       message: await openpgp.createMessage({ text: input }), // input as Message object
@@ -62,7 +39,7 @@ const clear = () => {
 </script>
 
 <template>
-  <div class="greetings">
+  <div>
     <p>Encrypt Times {{ times }} </p>
     <div class="outter-div column1">
       <textarea v-model="text" placeholder="put your text here" @input="clear()" @change="clear()"></textarea>
@@ -74,7 +51,6 @@ const clear = () => {
         github discussion in new page
       </a>
     </p>
-    <p>hello {{ username }}</p>
   </div>
 </template>
 
