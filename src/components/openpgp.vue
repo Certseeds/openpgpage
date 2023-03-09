@@ -46,11 +46,6 @@ const clear = () => {
       <div class="inner-div"></div>
     </div>
     <button @click="publishedBooksMessage(); times++"> click To Encrypt Word In TextArea</button>
-    <p>copy encrypted text to post it in
-      <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
-        github discussion in new page
-      </a>
-    </p>
   </div>
 </template>
 
