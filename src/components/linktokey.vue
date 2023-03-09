@@ -2,6 +2,7 @@
 import { reactive, toRefs, watchEffect } from 'vue';
 import { getKeyCanEncryptAndNotRevoked } from '@/components/openpgp';
 import openpgp from '@/components/openpgp.vue';
+import encryptid from '@/components/encrypyid.vue';
 const props = defineProps<{
   username: string
 }>()
@@ -17,7 +18,6 @@ const getFetchRawKey: (input: string) => Promise<string> = async (input: string)
     }).then(body => body.json())
       .then(bodyJson => {
         const value = getKeyCanEncryptAndNotRevoked(bodyJson);
-        console.log(value)
         return value.raw_key
       }) ?? '';
     return ownKey;
@@ -40,5 +40,12 @@ watchEffect(async () => {
   <div>
     <p>encry Target is github user {{ username }}</p>
     <openpgp :publicKey="ownKey.key"></openpgp>
+    <p>copy encrypted text to post it in
+      <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
+        github discussion in new page
+      </a>
+      or get encrypt public(sub) Key ID by past it in below
+    </p>
+    <encryptid></encryptid>
   </div>
 </template>
