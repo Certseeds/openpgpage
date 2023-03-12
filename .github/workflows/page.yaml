@@ -47,9 +47,6 @@ jobs:
       - name: node prepare
         run: pnpm i
 
-      - name: node detect changeset
-        run: pnpm changeset status --since=master
-
       - name: node test
         run: pnpm run test
 
