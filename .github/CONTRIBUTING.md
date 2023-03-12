@@ -1,6 +1,6 @@
 # Contributing
 
-本repo采用CC-BY-NC-SA-4.0 or any later version协议,既不能商用也不能不注明来源,传播后还必须采用相同许可证.
+本repo采用AGPL-3.0 or any later version协议.
 
 ## Submitting a pull request
 
