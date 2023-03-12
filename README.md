@@ -3,6 +3,16 @@
 
 a single static page to encrypt msg by my public key
 
+## changeset
+
+### for a normal pr
+
+it at least should have one changeset markdown file, create it by `npx changeset add`.
+
+### for a tag-and-release commit
+
+please create a single commit to run `npx changeset version` for `CHANGESET.md`.
+
 ## builtin
 
 This template should help get you started developing with Vue 3 in Vite.
