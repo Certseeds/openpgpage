@@ -44,7 +44,7 @@ jobs:
         run: pnpm i
 
       - name: node test
-        run: pnpm run test
+        run: pnpm test run
 
       - name: node build
         run: pnpm run build
