@@ -19,6 +19,7 @@
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.0",
     "@testing-library/vue": "^6.6.1",
     "@types/node": "^18.11.12",
     "@vitejs/plugin-vue": "^4.0.0",
