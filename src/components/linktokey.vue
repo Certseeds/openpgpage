@@ -14,7 +14,7 @@ const getFetchRawKey: (input: string) => Promise<string> = async (input: string)
     const url = `https://api.github.com/users/${username.value}/gpg_keys`
     const ownKey = await fetch(url, {
       method: 'get',
-      headers: { 'Accept': '  application/vnd.github+json', },
+      headers: { 'Accept': 'application/vnd.github+json', },
     }).then(body => body.json())
       .then(bodyJson => {
         const value = getKeyCanEncryptAndNotRevoked(bodyJson);
