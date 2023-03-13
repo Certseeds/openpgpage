@@ -45,9 +45,6 @@ jobs:
       - name: node prepare
         run: pnpm i
 
-      - name: node detect changeset
-        run: bash ./.changeset/check.sh
-
       - name: node test
         run: pnpm test run
 
