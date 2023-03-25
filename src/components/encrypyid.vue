@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { getEncryKeyFromText } from '@/components/openpgp';
 import { ref, watchEffect } from 'vue';
+import { getEncryKeyFromText } from '@/components/linkes/openpgp';
 const text = ref('');
 const id = ref('');
+
 watchEffect(async () => {
   const textValue = text.value;
   const idStirng = await getEncryKeyFromText(textValue);
