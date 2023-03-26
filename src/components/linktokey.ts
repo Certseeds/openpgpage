@@ -1,13 +1,16 @@
 import { getGithubKey } from '@/components/linkes/github';
 
-const fetchKeyByUrl: (input: string) => Promise<string> = async (path: string) => {
-  if (path.startsWith("github")) {
-    const username = path.split("/")[1];// i guess github do not allow '/' in username
-    return getGithubKey(username);
+
+const fetchKeyByUrl: (prefix: string, path: string) => Promise<string> = async (prefix: string, path: string) => {
+  if (prefix === 'github') {
+    return await getGithubKey(path);
+  } else if (prefix.length === 0) {
+    const defaultKey = await fetch('https://certseeds.github.io/Certseeds/public.key', {
+      method: 'get',
+    }).then(body => body.text())
+    return defaultKey
   }
-  return await fetch('https://certseeds.github.io/Certseeds/public.key', {
-    method: 'get',
-  }).then(body => body.text());
+  return '';
 }
 
 export { fetchKeyByUrl };

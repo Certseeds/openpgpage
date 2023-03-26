@@ -7,7 +7,7 @@ const routes = [
   { path: '', component: App },
   { path: '/', component: App },
   {
-    path: '/github/:path',
+    path: '/:prefix/:path',
     component: App,
     props: true
   },

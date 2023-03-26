@@ -50,9 +50,10 @@ const getIndexDB = async () => {
   // }
 }
 
-const getOrFetch: (path: string) => Promise<pathToGpgKeys> = async (path: string) => {
+const getOrFetch: (prefix:string ,path: string) => Promise<pathToGpgKeys> = async (prefix:string ,path: string) => {
   const database = await getIndexDB();
-  const value: pathToGpgKeys = await database.get(common.tableName, path);
+  const urlPath = `${prefix}/${path}`
+  const value: pathToGpgKeys = await database.get(common.tableName, urlPath);
   const now = (new Date()).getTime()
   if (value !== null && value !== undefined) {
     if (now - value.lastUpdate <= common.updateMills) {
@@ -60,14 +61,13 @@ const getOrFetch: (path: string) => Promise<pathToGpgKeys> = async (path: string
     }
   }
   // now value is null| undefined or can use but need update
-  const key = await fetchKeyByUrl(path);
-  if (key === null || key === undefined) {
+  const key = await fetchKeyByUrl(prefix, path);
+  if (((key?.length) ?? 0) === 0) {
     throw new Error('fetch key fail');
   }
-
   const createTimeOfObject = value?.createTime ?? now;
   const obj: pathToGpgKeys = {
-    path: path,
+    path: urlPath,
     rawKey: key,
     createTime: createTimeOfObject,
     lastUpdate: now,
