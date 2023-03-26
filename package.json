@@ -16,6 +16,7 @@
     "changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 --context changelog.config.ts"
   },
   "dependencies": {
+    "idb": "^7.1.1",
     "openpgp": "^5.7.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"

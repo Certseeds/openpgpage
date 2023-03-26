@@ -1,19 +1,23 @@
-import * as openpgp from 'openpgp/lightweight';
 interface github_gpg_key {
   key_id?: string,
   raw_key?: string,
   emails?: object[]
 }
 
-const getEncryKeyFromText: (text: string) => Promise<string> = async (text: string) => {
-  if (0 === (text.length ?? 0)) {
-    return '';
+const getGithubKey: (username: string) => Promise<string> = async (username: string) => {
+  if ((username?.length ?? 0) > 0) {
+    const url = `https://api.github.com/users/${username}/gpg_keys`
+    const ownKey = await fetch(url, {
+      method: 'get',
+      headers: { 'Accept': 'application/vnd.github+json', },
+    }).then(body => body.json())
+      .then(bodyJson => {
+        const value = getKeyCanEncryptAndNotRevoked(bodyJson);
+        return value.raw_key
+      }) ?? '';
+    return ownKey;
   }
-  const encryptText = await openpgp.readMessage({ armoredMessage: text });
-  const keyIds = await encryptText.getEncryptionKeyIDs();
-  const keyIdHex = keyIds.map( keyId  => keyId.toHex());
-  const idListStr = keyIdHex.join(',');
-  return idListStr;
+  return '';
 }
 
 const getKeyCanEncryptAndNotRevoked: (keys: any) => github_gpg_key = (keys: any) => {
@@ -51,4 +55,4 @@ const getKeyCanEncryptAndNotRevoked: (keys: any) => github_gpg_key = (keys: any)
 };
 
 export type { github_gpg_key };
-export { getKeyCanEncryptAndNotRevoked,getEncryKeyFromText };
+export { getGithubKey, getKeyCanEncryptAndNotRevoked };
