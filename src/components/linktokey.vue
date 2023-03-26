@@ -5,7 +5,7 @@ import encryptid from '@/components/encrypyid.vue';
 import { getOrFetch } from '@/components/cache';
 const props = defineProps<{
   prefix: string,
-  path: string
+  path: string | string[]
 }>()
 
 const { prefix, path } = toRefs(props);
@@ -15,7 +15,12 @@ const ownKey = reactive({ key: '' })
 watchEffect(async () => {
   const prefix_value = prefix.value ?? '';
   const path_value = path.value ?? '';
-  ownKey.key = await (await getOrFetch(prefix_value, path_value)).rawKey;
+  if (prefix_value === 'raw') {
+    const path_values = (path_value as string[]).join('/');
+    ownKey.key = await (await getOrFetch(prefix_value, path_values)).rawKey;
+  } else {
+    ownKey.key = await (await getOrFetch(prefix_value, path_value as string)).rawKey;
+  }
   // api.github.com/
 });
 </script>
