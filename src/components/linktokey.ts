@@ -5,7 +5,7 @@ const fetchKeyByUrl: (prefix: string, path: string) => Promise<string> = async (
   if (prefix === 'github') {
     return await getGithubKey(path);
   } else if (prefix.length === 0) {
-    const defaultKey = await fetch('https://certseeds.github.io/Certseeds/public.key', {
+    const defaultKey = await fetch('https://blog.certseeds.com/public.key', {
       method: 'get',
     }).then(body => body.text())
     return defaultKey

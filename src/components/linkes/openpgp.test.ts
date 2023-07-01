@@ -3,7 +3,7 @@ import * as openpgp from 'openpgp';
 import { getEncryKeyFromText } from '@/components/linkes/openpgp';
 
 test('test encrypt and get KeyID', async () => {
-  const key = await fetch('https://certseeds.github.io/Certseeds/public.key', {
+  const key = await fetch('https://blog.certseeds.com/public.key', {
     method: 'GET',
   }).then(body => body.text());;
   expect(key).not.toEqual('');
