@@ -1,12 +1,16 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   idb:
     specifier: ^7.1.1
     version: 7.1.1
   openpgp:
-    specifier: ^5.9.0
-    version: 5.9.0
+    specifier: ^5.10.1
+    version: 5.10.1
   vue:
     specifier: ^3.3.4
     version: 3.3.4
@@ -2000,8 +2004,8 @@ packages:
       which-pm-runs: 1.1.0
     dev: true
 
-  /openpgp@5.9.0:
-    resolution: {integrity: sha512-wEI6TAinCAq8ZLZA4oZ3ZtJ2BhhHj+CiPCd8TzE7zCicr0V8tvG5UF76OtddLLOJcK63w3Aj3KiRd+VLMScirQ==}
+  /openpgp@5.10.1:
+    resolution: {integrity: sha512-SR5Ft+ej51d0+p53ld5Ney0Yiz0y8Mh1YYLJrvpRMbTaNhvS1QcDX0Oq1rW9sjBnQXtgrpWw2Zve3rm7K5C/pw==}
     engines: {node: '>= 8.0.0'}
     dependencies:
       asn1.js: 5.4.1
