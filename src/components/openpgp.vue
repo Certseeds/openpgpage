@@ -35,6 +35,23 @@ const clear = () => {
     times.value = 0;
   }
 }
+const triggerDownload = () => {
+  const objectBlob = new Blob([text.value], { type: 'application/pgp' });
+  const objUrl = URL.createObjectURL(objectBlob);
+  openpgp.readKey({ armoredKey: props.publicKey }).then(x => {
+    // read public keygrip from key
+    return x.getEncryptionKey().then(x => {
+      return x.getKeyID().toHex(); // do not want to use main keyID
+    })
+  })
+    .then(encryptKeyID => {
+      const downloadElement: HTMLAnchorElement = document.createElement('a');
+      downloadElement.download = `${encryptKeyID}.${Date.now()}.encry.txt`;
+      downloadElement.href = objUrl;
+      downloadElement.click();
+      URL.revokeObjectURL(downloadElement.href);
+    })
+}
 
 </script>
 
@@ -43,9 +60,12 @@ const clear = () => {
     <p>Encrypt Times {{ times }} </p>
     <div class="outter-div column1">
       <textarea v-model="text" placeholder="put your text here" @input="clear()" @change="clear()"></textarea>
-      <div class="inner-div"></div>
     </div>
-    <button @click="publishedBooksMessage(); times++"> click To Encrypt Word In TextArea</button>
+    <div class="outter-div column1">
+      <button @click="publishedBooksMessage(); times++"> click To Encrypt Word In TextArea</button>
+      <button @click="triggerDownload();" class="right-button">saveAsFile</button>
+    </div>
+
   </div>
 </template>
 
@@ -60,17 +80,13 @@ const clear = () => {
 
 .outter-div textarea {
   border: 1px solid;
-  position: absolute;
-  height: 100%;
+  height: calc(40vh);
   width: 100%;
   line-height: 16px;
 }
 
-.inner-div {
-  position: relative;
-  height: calc(40vh);
-  width: calc(40vw);
-  visibility: hidden;
+.right-button {
+  float: right;
 }
 
 h1 {
