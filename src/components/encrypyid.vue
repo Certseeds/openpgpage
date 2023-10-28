@@ -39,17 +39,9 @@ const clear = () => {
 
 .outter-div textarea {
   border: 1px solid;
-  position: absolute;
-  height: 100%;
+  height: calc(40vh);
   width: 100%;
   line-height: 16px;
-}
-
-.inner-div {
-  position: relative;
-  height: calc(40vh);
-  width: calc(40vw);
-  visibility: hidden;
 }
 
 h1 {
