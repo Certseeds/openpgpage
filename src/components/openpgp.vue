@@ -35,6 +35,21 @@ const clear = () => {
     times.value = 0;
   }
 }
+const triggerUpload = (event: Event) => {
+  const fileInput = event.target as HTMLInputElement;
+  const file = fileInput.files?.[0];
+  if (file === undefined) {
+    return;
+  }
+  // read string from file
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const target = e.target as FileReader;
+    text.value = target.result as string;
+  }
+  reader.readAsText(file);
+}
+
 const triggerDownload = () => {
   const objectBlob = new Blob([text.value], { type: 'application/pgp' });
   const objUrl = URL.createObjectURL(objectBlob);
@@ -58,6 +73,10 @@ const triggerDownload = () => {
 <template>
   <div>
     <p>Encrypt Times {{ times }} </p>
+    <div>
+      <label for="upload_encrypt">Choose plain text to upload</label>
+      <input type="file" id="upload_encrypt" name="upload_encrypt" multiple="false" @change="triggerUpload" />
+    </div>
     <div class="outter-div column1">
       <textarea v-model="text" placeholder="put your text here" @input="clear()" @change="clear()"></textarea>
     </div>
@@ -65,7 +84,6 @@ const triggerDownload = () => {
       <button @click="publishedBooksMessage(); times++"> click To Encrypt Word In TextArea</button>
       <button @click="triggerDownload();" class="right-button">saveAsFile</button>
     </div>
-
   </div>
 </template>
 
