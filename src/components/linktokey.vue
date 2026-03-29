@@ -15,12 +15,30 @@ onMounted(async () => {
 <template>
   <div>
     <openpgp :publicKey="ownKey.key"></openpgp>
-    <p>copy encrypted text to post it in
+
+    <div class="divider"></div>
+
+    <p class="hint">
+      Copy the encrypted text and post it in a
       <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
-        github discussion in new page
-      </a>
-      or get encrypt public(sub) Key ID by past it in below
+        GitHub Discussion
+      </a>, or paste an encrypted message below to identify its encryption key.
     </p>
+
     <encryptid></encryptid>
   </div>
 </template>
+
+<style scoped>
+.divider {
+  border-top: 1px solid var(--color-border);
+  margin: 1.5rem 0;
+}
+
+.hint {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.75;
+  margin-bottom: 1rem;
+}
+</style>

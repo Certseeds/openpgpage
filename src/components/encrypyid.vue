@@ -19,51 +19,69 @@ const clear = () => {
 </script>
 
 <template>
-  <div>
-    <p>EncryptText is encrypt By {{ id }} </p>
-    <div class="outter-div column1">
-      <textarea v-model="text" placeholder="put encryptText here" @input="clear()" @change="clear()"></textarea>
-      <div class="inner-div"></div>
+  <div class="identify-section">
+    <div class="section-header">
+      <h2>Identify</h2>
+      <span class="key-id" v-if="id">🔑 {{ id }}</span>
     </div>
+    <textarea
+      v-model="text"
+      class="text-area"
+      placeholder="Paste encrypted PGP message here to identify the encryption key…"
+      @input="clear()"
+      @change="clear()"
+    ></textarea>
   </div>
 </template>
 
 <style scoped>
-.outter-div {
-  border: 0px;
-  position: relative;
-  height: 100%;
-  width: 100%;
-  text-align: justify;
+.identify-section {
+  margin-top: 0.5rem;
 }
 
-.outter-div textarea {
-  border: 1px solid;
-  height: calc(40vh);
-  width: 100%;
-  line-height: 16px;
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
 }
 
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  top: -10px;
-}
-
-h3 {
+.section-header h2 {
   font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin: 0;
 }
 
-.greetings h1,
-.greetings h3 {
-  text-align: center;
+.key-id {
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: var(--color-background-mute);
+  border: 1px solid var(--color-border);
+  word-break: break-all;
 }
 
-@media (min-width: 1024px) {
+.text-area {
+  display: block;
+  width: 100%;
+  height: 20vh;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background-soft);
+  color: var(--color-text);
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
 
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
-  }
+.text-area:focus {
+  outline: none;
+  border-color: hsla(160, 100%, 37%, 0.6);
 }
 </style>
