@@ -12,8 +12,14 @@ watchEffect(async () => {
   const ownKey = props.publicKey;
   const encry = async (input: string) => {
     const encrypted = await openpgp.encrypt({
-      message: await openpgp.createMessage({ text: input }), // input as Message object
-      encryptionKeys: await openpgp.readKey({ armoredKey: ownKey })
+      message: await openpgp.createMessage({ text: input }),
+      encryptionKeys: await openpgp.readKey({ armoredKey: ownKey }),
+      config: {
+        preferredSymmetricAlgorithm: openpgp.enums.symmetric.aes256,
+        preferredHashAlgorithm: openpgp.enums.hash.sha512,
+        preferredCompressionAlgorithm: openpgp.enums.compression.uncompressed,
+        aeadProtect: true,
+      }
     });
     console.log(encrypted);
     return encrypted;

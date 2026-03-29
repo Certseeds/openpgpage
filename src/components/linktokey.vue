@@ -1,33 +1,19 @@
 <script setup lang="ts">
-import { reactive, toRefs, watchEffect } from 'vue';
+import { reactive, onMounted } from 'vue';
 import openpgp from '@/components/openpgp.vue';
 import encryptid from '@/components/encrypyid.vue';
-import { getOrFetch } from '@/components/cache';
-const props = defineProps<{
-  prefix: string,
-  path: string | string[]
-}>()
 
-const { prefix, path } = toRefs(props);
-const ownKey = reactive({ key: '' })
+const DEFAULT_KEY_URL = 'https://blog.certseeds.com/public.key';
+const ownKey = reactive({ key: '' });
 
-
-watchEffect(async () => {
-  const prefix_value = prefix.value ?? '';
-  const path_value = path.value ?? '';
-  if (prefix_value === 'raw') {
-    const path_values = (path_value as string[]).join('/');
-    ownKey.key = await (await getOrFetch(prefix_value, path_values)).rawKey;
-  } else {
-    ownKey.key = await (await getOrFetch(prefix_value, path_value as string)).rawKey;
-  }
-  // api.github.com/
+onMounted(async () => {
+  const resp = await fetch(DEFAULT_KEY_URL, { method: 'get' });
+  ownKey.key = await resp.text();
 });
 </script>
 
 <template>
   <div>
-    <p>encry Target come from path {{ `${prefix}/${path}` }}</p>
     <openpgp :publicKey="ownKey.key"></openpgp>
     <p>copy encrypted text to post it in
       <a href="https://github.com/Certseeds/Certseeds/discussions/new?category=general" target="_blank">
