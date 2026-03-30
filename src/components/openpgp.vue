@@ -86,7 +86,7 @@ const triggerDownload = () => {
 
     <div class="file-upload">
       <label for="upload_encrypt" class="upload-label">
-        📄 Choose a plain text file
+        📄 Choose a plain text file (Recommended: Uploading avoids clipboard leakage)
       </label>
       <input type="file" id="upload_encrypt" name="upload_encrypt" multiple="false" @change="triggerUpload" />
     </div>
@@ -94,7 +94,7 @@ const triggerDownload = () => {
     <textarea
       v-model="text"
       class="text-area"
-      placeholder="Type or paste your plain text here…"
+      placeholder="Type or paste your plain text here (File upload is safer)…"
       @input="clear()"
       @change="clear()"
     ></textarea>
