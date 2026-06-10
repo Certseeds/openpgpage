@@ -7,7 +7,7 @@ import {
   type ParsedKeyInfo,
   type WkdEmailDisplay,
 } from './linkes/wkd';
-import JSZip from 'jszip';
+import { zip } from 'fflate';
 
 const url = ref('');
 const loading = ref(false);
@@ -89,23 +89,25 @@ function loadFromFile(event: Event) {
 }
 
 async function downloadZip() {
-  try {
-    const files = await generateWkdFiles(parsedKeys.value);
-    const zip = new JSZip();
-    for (const file of files) {
-      zip.file(file.path, file.content);
+  const files = await generateWkdFiles(parsedKeys.value);
+  const filesMap: Record<string, Uint8Array> = {};
+  for (const { path, content } of files) {
+    filesMap[path] = content;
+  }
+  zip(filesMap, { level: 6 }, (err, data) => {
+    if (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to generate ZIP';
+      return;
     }
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const objUrl = URL.createObjectURL(blob);
+    const content = new Blob([data], { type: 'application/zip' });
+    const objUrl = URL.createObjectURL(content);
     const fingerprints = parsedKeys.value.map(k => k.fingerprint).join('_');
     const a = document.createElement('a');
     a.href = objUrl;
     a.download = `${fingerprints}.wkd.zip`;
     a.click();
     URL.revokeObjectURL(objUrl);
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to generate ZIP';
-  }
+  })
 }
 </script>
 
@@ -119,13 +121,8 @@ async function downloadZip() {
     </p>
 
     <div class="input-group">
-      <input
-        v-model="url"
-        type="url"
-        class="url-input"
-        placeholder="https://example.com/public.key"
-        @keyup.enter="loadKey"
-      />
+      <input v-model="url" type="url" class="url-input" placeholder="https://example.com/public.key"
+        @keyup.enter="loadKey" />
       <button @click="loadKey" :disabled="loading" class="btn">
         {{ loading ? 'Loading…' : 'Load' }}
       </button>
